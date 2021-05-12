@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.example.googlebooksapi_part2.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -14,15 +16,16 @@ class MainFragment : Fragment() {
 
     private val viewModel: BookViewModel by viewModels()
 
-    var books: List<Book> = listOf(
-        Book("Android Beginner", "A Beginners Guide to Android", "Griffin Price"),
-        Book("Android Expert","", "Amanda Jones"))
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        val mAdapter = BookAdapter(books)
-        binding.recyclerView.adapter = mAdapter
+
         viewModel.getBooks()
+
+        viewModel.response.observe(viewLifecycleOwner, Observer { bookList ->
+            val mAdapter = BookAdapter(bookList)
+            binding.recyclerView.adapter = mAdapter
+        })
+
         return binding.root
     }
 
