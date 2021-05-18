@@ -24,13 +24,13 @@ class BookViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(bin
         binding.bookTitle.text = currentBook.title
 
         if(currentBook.subtitle == ""){
-            binding.bookSubtitle.text = currentBook.author.toString() //prolly remove toString
+            binding.bookSubtitle.text = currentBook.author.toString().substring(1, currentBook.author.toString().length-1)
             binding.bookAuthor.text = ""
         }
 
         else{
             binding.bookSubtitle.text = currentBook.subtitle
-            binding.bookAuthor.text = currentBook.author.toString() //prolly remove toString
+            binding.bookAuthor.text = currentBook.author.toString().substring(1, currentBook.author.toString().length-1)
         }
     }
 }

@@ -18,7 +18,7 @@ private val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFact
 
 interface BookAPIService {
     @GET(QUERY_STRING)
-    fun getBooks(): Call<USGSResponse>
+    fun getBooks(): Call<GoogleBooksResponse>
 }
 
 object BookAPI{

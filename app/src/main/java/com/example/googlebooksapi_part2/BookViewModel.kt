@@ -14,24 +14,31 @@ class BookViewModel : ViewModel() {
         get() = _response
     fun getBooks(){
         val request = BookAPI.bookApi.getBooks()
-        request.enqueue(object: Callback<USGSResponse> {
-            override fun onFailure(call: Call<USGSResponse>, t: Throwable) {
+        request.enqueue(object: Callback<GoogleBooksResponse> {
+            override fun onFailure(call: Call<GoogleBooksResponse>, t: Throwable) {
                 Log.d("RESPONSE", "Failure: " + t.message)
             }
 
-            override fun onResponse(call: Call<USGSResponse>, response: Response<USGSResponse>) {
+            override fun onResponse(call: Call<GoogleBooksResponse>, response: Response<GoogleBooksResponse>) {
                 val listOfBooksFetched= mutableListOf<Book>()
 
-                val usgsResponse: USGSResponse? = response.body()
+                val usgsResponse: GoogleBooksResponse? = response.body()
                 val bookItemsList = usgsResponse?.bookItemsList ?: listOf()
 
                 for(bookItems in bookItemsList){
                     val bookVolumeInfo = bookItems.bookVolumeInfo
+                    val bookAccessInfo = bookItems.bookAccessInfo
 
                     val title = bookVolumeInfo.bookTitle
-                    val subtitle = bookVolumeInfo.bookSubtitle
+                    val subtitle =
+                        try{
+                            bookVolumeInfo.bookSubtitle
+                        }
+                        catch(e: UninitializedPropertyAccessException){
+                            ""
+                        }
                     val authors = bookVolumeInfo.bookAuthorsList
-                    val url = bookItems.bookSelfLink
+                    val url = bookAccessInfo.bookWebReaderLink
 
                     val newBook = Book(title, subtitle, authors, url)
                     listOfBooksFetched.add(newBook)
